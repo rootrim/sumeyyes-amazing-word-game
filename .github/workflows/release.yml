@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11" # Projende hangi versiyonu kullanıyorsan
+          python-version: "3.13" # Projende hangi versiyonu kullanıyorsan
 
       - name: Install Poetry
         run: |
