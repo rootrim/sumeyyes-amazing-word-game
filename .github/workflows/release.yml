@@ -58,6 +58,12 @@ jobs:
           cp dist/* dist_release_pyinstaller/
         shell: bash
 
+      - name: Debug: List dist_release contents
+        run: ls -al dist_release
+
+      - name: Debug: List dist_release_pyinstaller contents
+        run: ls -al dist_release_pyinstaller
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -87,6 +93,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: dist_release_pyinstaller
+
+      - name: Debug: List downloaded dist_release contents
+        run: ls -al dist_release
+
+      - name: Debug: List downloaded dist_release_pyinstaller contents
+        run: ls -al dist_release_pyinstaller
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
