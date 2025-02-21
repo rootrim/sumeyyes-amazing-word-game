@@ -52,6 +52,10 @@ jobs:
           poetry run pyinstaller --add-data "sumeyyes_amazing_word_game/data/words.db:data" --add-data "sumeyyes_amazing_word_game/data/players.db:data" sumeyyes_amazing_word_game/__main__.py
         shell: bash
 
+      - name: Make A Zip File That Covers Executable
+        run: |
+          zip -r dist/game.zip dist/__main__
+
       - name: Package PyInstaller Build
         run: |
           mkdir dist_release_pyinstaller
