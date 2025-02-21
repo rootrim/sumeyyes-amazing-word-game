@@ -1,11 +1,18 @@
 import os
 import csv
 import sqlite3
+import sys
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-word_path = os.path.join(BASE_DIR, "db", "words.db")
-player_path = os.path.join(BASE_DIR, "db", "players.db")
-csv_path = os.path.join(BASE_DIR, "db", "words.csv")
+
+def get_base_path():
+    if hasattr(sys, "_MEIPASS"):  # PyInstaller için
+        return sys._MEIPASS
+    return os.path.abspath(".")
+
+
+word_path = os.path.join(get_base_path(), "data", "words.db")
+player_path = os.path.join(get_base_path(), "data", "players.db")
+csv_path = os.path.join(get_base_path(), "data", "words.csv")
 
 
 def fetch_words():

@@ -1,9 +1,9 @@
 import os
 import sqlite3
 from random import choice
+from sumeyyes_amazing_word_game.utils import get_base_path
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-player_path = os.path.join(BASE_DIR, "db", "players.db")
+player_path = os.path.join(get_base_path(), "data", "players.db")
 
 
 class Letter:

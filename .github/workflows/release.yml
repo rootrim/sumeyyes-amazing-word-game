@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13" # Projende hangi versiyonu kullanıyorsan
+          python-version: "3.13"
 
       - name: Install Poetry
         run: |
@@ -43,12 +43,32 @@ jobs:
           fi
         shell: bash
 
+      - name: Install PyInstaller
+        run: |
+          pip install pyinstaller
+
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller --onefile --add-data "sumeyyes_amazing_word_game/db/words.db:data/words.db" --add-data "sumeyyes_amazing_word_game/db/players.db:data/players.db" sumeyyes_amazing_word_game/__main__.py
+        shell: bash
+
+      - name: Package PyInstaller Build
+        run: |
+          mkdir dist_release_pyinstaller
+          cp dist/* dist_release_pyinstaller/
+        shell: bash
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-build
           path: dist_release/*
+
+      - name: Upload PyInstaller Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyinstaller-build
+          path: dist_release_pyinstaller/*
 
   release:
     needs: build
@@ -63,6 +83,11 @@ jobs:
         with:
           path: dist_release
 
+      - name: Download PyInstaller Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist_release_pyinstaller
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -76,6 +101,6 @@ jobs:
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: dist_release/**/*
+          files: dist_release/**/*, dist_release_pyinstaller/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

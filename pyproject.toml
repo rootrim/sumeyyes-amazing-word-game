@@ -1,14 +1,17 @@
 [tool.poetry]
 name = "sumeyyes-amazing-word-game"
-version = "0.7.6"
+version = "0.8.0"
 description = "A word guessing game for my class teacher Sumeyye!"
 authors = ["rootrim <omuaz01@gmail.com>"]
 license = "GPL-3.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = ">=3.12,<3.14"
 
+
+[tool.poetry.group.dev.dependencies]
+pyinstaller = "^6.12.0"
 
 [build-system]
 requires = ["poetry-core"]
