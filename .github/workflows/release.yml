@@ -61,13 +61,13 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-build
+          name: build-${{ matrix.os }}-${{ github.run_id }}
           path: dist_release/*
 
       - name: Upload PyInstaller Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pyinstaller-build
+          name: pyinstaller-build-${{ matrix.os }}-${{ github.run_id }}
           path: dist_release_pyinstaller/*
 
   release:
