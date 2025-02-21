@@ -67,7 +67,7 @@ jobs:
       - name: Upload PyInstaller Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pyinstaller-build-${{ github.run_id }}
+          name: pyinstaller-build-${{ matrix.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: dist_release_pyinstaller/*
 
   release:
