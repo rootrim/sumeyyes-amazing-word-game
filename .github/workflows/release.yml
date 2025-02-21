@@ -49,7 +49,7 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          pyinstaller --onefile --add-data "sumeyyes_amazing_word_game/db/words.db:data/words.db" --add-data "sumeyyes_amazing_word_game/db/players.db:data/players.db" sumeyyes_amazing_word_game/__main__.py
+          pyinstaller --add-data "sumeyyes_amazing_word_game/db/words.db:data/words.db" --add-data "sumeyyes_amazing_word_game/db/players.db:data/players.db" sumeyyes_amazing_word_game/__main__.py
         shell: bash
 
       - name: Package PyInstaller Build
@@ -101,6 +101,6 @@ jobs:
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: dist_release_pyinstaller/**/*
+          files: dist_release/**/*, dist_release_pyinstaller/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

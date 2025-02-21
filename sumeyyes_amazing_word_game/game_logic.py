@@ -15,20 +15,24 @@ class Game:
                 [word for word in self.words if word[0] not in self.used_words]
             )
         except IndexError:
-            print("Are you the Master? You have already known all the words!")
+            print("You have already played all the words!")
+            self.save_score()
 
     def guess(self, input_word):
         if self.current_word.guess(input_word):
             self.player.add_score(self.current_word.score)
             self.player.knownWordCount += 1
-            self.skip()
+            self.next()
             return True
         return False
 
     def reveal_a_letter(self):
         self.current_word.reveal_a_letter()
+        print("Word is exposed!")
+        if self.current_word.is_exposed():
+            self.next()
 
-    def skip(self):
+    def next(self):
         self.used_words.add(self.current_word.word)
         self.current_word = Word(self.get_random_word())
 

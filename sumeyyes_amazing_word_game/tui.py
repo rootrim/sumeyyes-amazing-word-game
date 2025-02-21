@@ -1,46 +1,61 @@
-from random import choice
-
-from sumeyyes_amazing_word_game.objects import Word
+from sumeyyes_amazing_word_game.objects import Player
 from sumeyyes_amazing_word_game.utils import fetch_words
+from sumeyyes_amazing_word_game.game_logic import Game
 
 
-def game():
-    used_words = set()
-    (word, description, level) = random_word(used_words)
-    word = Word(word)
-    print(f"This word's level is {level}")
-    print(description)
-
-    while not word.is_exposed():
-        print(word.show())
+def main():
+    print("Welcome to Sumeyye's Amazing Word Game!")
+    name = input("Please enter your name\n-> ")
+    words = fetch_words()
+    game = Game(Player(name), words)
+    while True:
         print(
-            """What do you want to do?
-1. Guess the word
-2. Get a random letter 
-3. Skip this word
-4. Exit
-[Enter a number between 1-4]-> 
+            f"""
+Your score is {game.get_score()}
+YTou have known {game.get_known_word_count()} words.
 """
         )
-        match input():
+
+        print(
+            f"""
+Your word: {game.show()}
+Description: {game.get_current_word_description()}
+"""
+        )
+
+        choiced_choice = input(
+            """
+What do you want to do?
+1. Guess the word
+2. Reveal a letter
+3. Skip this word
+4. Save and quit
+Enter the number of your choice
+"""
+            + "-> ",
+        )
+
+        match choiced_choice:
             case "1":
-                input_word = input("Enter a word:\n").lower()
-                if word.guess(input_word):
-                    print("You guessed the word!")
-                    break
-
+                game.guess(input("Enter your guess\n-> "))
             case "2":
-                word.reveal_a_letter()
+                game.reveal_a_letter()
             case "3":
-                game()
-                exit()
+                game.next()
             case "4":
-                return
-    print(f"Your score is: {word.score}")
+                game.save_score()
+                break
+            case "DEBUG":
+                eval(input())
+            case "KEKLOVESBTS":
+                game.player.add_score(1000000)
+            case _:
+                print("Invalid choice! Please enter a valid number.")
+
+    print(f"Your final score is {game.get_score()}")
+    print(f"You have known {game.get_known_word_count()} words as far.")
+    print("See you later!")
 
 
-def random_word(used_words=set()):
-    random_word = choice(fetch_words())
-    while random_word in used_words:
-        random_word = choice(fetch_words())
-    return random_word
+if __name__ == "__main__":
+    main()

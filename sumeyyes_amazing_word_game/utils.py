@@ -1,13 +1,14 @@
-import os
 import csv
+import os
 import sqlite3
-import sys
+
+# import sys
 
 
 def get_base_path():
-    if hasattr(sys, "_MEIPASS"):  # PyInstaller için
-        return sys._MEIPASS
-    return os.path.abspath(".")
+    # if hasattr(sys, "_MEIPASS"):
+    #    return sys._MEIPASS
+    return os.path.abspath("sumeyyes_amazing_word_game")
 
 
 word_path = os.path.join(get_base_path(), "data", "words.db")
