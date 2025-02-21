@@ -100,10 +100,11 @@ jobs:
 
       - name: Upload Release Assets
         run: |
-          asset_id=$(gh api -X GET "repos/${{ github.repository }}/releases/assets" | jq '.[] | select(.name == "your-asset-name") | .id')
+          release_id=$(gh api -X GET "repos/${{ github.repository }}/releases/tags/${{ github.ref_name }}" | jq -r '.id')
+          asset_id=$(gh api -X GET "repos/${{ github.repository }}/releases/${release_id}/assets" | jq -r '.[] | select(.name == "your-asset-name") | .id')
           if [ -z "$asset_id" ]; then
             echo "Asset not found, creating a new one"
-            gh release upload ${{ github.ref }} path/to/your-asset --clobber
+            gh release upload ${{ github.ref_name }} path/to/your-asset --clobber
           else
             echo "Asset found, updating existing one"
             gh api -X PATCH "/repos/${{ github.repository }}/releases/assets/$asset_id" -F name="your-asset-name" -F label="Updated Asset" -F file=@path/to/your-asset
