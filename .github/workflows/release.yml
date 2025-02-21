@@ -54,7 +54,12 @@ jobs:
 
       - name: Make A Zip File That Covers Executable
         run: |
-          zip -r dist/game.zip dist/__main__
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            powershell Compress-Archive -Path dist/__main__ -DestinationPath dist/game-${{ runner.os }}.zip
+          else
+            zip -r dist/game-${{ runner.os }}.zip dist/__main__
+          fi
+        shell: bash
 
       - name: Package PyInstaller Build
         run: |
@@ -73,6 +78,12 @@ jobs:
         with:
           name: pyinstaller-build-${{ matrix.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: dist_release_pyinstaller/*
+
+  #   - name: Upload ZIP Artifact
+  #     uses: actions/upload-artifact@v4
+  #     with:
+  #       name: game-zip-${{ matrix.os }}-${{ github.run_id }}
+  #       path: dist/game-${{ runner.os }}.zip
 
   release:
     needs: build
@@ -105,6 +116,9 @@ jobs:
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: dist_release/**/*, dist_release_pyinstaller/**/*
+          files: |
+            dist_release/**/* 
+            dist_release_pyinstaller/**/*
+        #   dist_release/**/game-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
