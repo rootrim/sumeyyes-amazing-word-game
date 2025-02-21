@@ -49,7 +49,7 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          pyinstaller --add-data "sumeyyes_amazing_word_game/db/words.db:data/words.db" --add-data "sumeyyes_amazing_word_game/db/players.db:data/players.db" sumeyyes_amazing_word_game/__main__.py
+          poetry run pyinstaller --add-data "sumeyyes_amazing_word_game/data/words.db:data" --add-data "sumeyyes_amazing_word_game/data/players.db:data" sumeyyes_amazing_word_game/__main__.py
         shell: bash
 
       - name: Package PyInstaller Build
