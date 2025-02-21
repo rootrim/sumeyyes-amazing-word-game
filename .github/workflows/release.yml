@@ -99,8 +99,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist_release/**/*, dist_release_pyinstaller/**/*
+        run: |
+          asset_id=$(gh api -X GET "repos/${{ github.repository }}/releases/assets" | jq '.[] | select(.name == "your-asset-name") | .id')
+          if [ -z "$asset_id" ]; then
+            echo "Asset not found, creating a new one"
+            gh release upload ${{ github.ref }} path/to/your-asset --clobber
+          else
+            echo "Asset found, updating existing one"
+            gh api -X PATCH "/repos/${{ github.repository }}/releases/assets/$asset_id" -F name="your-asset-name" -F label="Updated Asset" -F file=@path/to/your-asset
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
