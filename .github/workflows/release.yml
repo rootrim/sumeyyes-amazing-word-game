@@ -101,6 +101,8 @@ jobs:
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: dist_release/linux/*, dist_release/windows/*
+          files: |
+            dist_release/*
+            dist_release_pyinstaller/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
