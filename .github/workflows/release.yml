@@ -35,14 +35,14 @@ jobs:
 
       - name: Package Application
         run: |
+          mkdir dist_release
           if [ "${{ runner.os }}" == "Windows" ]; then
-            mkdir dist_release
-            copy dist\*.whl dist_release\
+            cp dist/*.whl dist_release/
           else
-            mkdir dist_release
             cp dist/*.tar.gz dist_release/
           fi
         shell: bash
+
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
