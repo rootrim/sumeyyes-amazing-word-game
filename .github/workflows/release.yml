@@ -58,22 +58,16 @@ jobs:
           cp dist/* dist_release_pyinstaller/
         shell: bash
 
-      - name: Debug: List dist_release contents
-        run: ls -al dist_release
-
-      - name: Debug: List dist_release_pyinstaller contents
-        run: ls -al dist_release_pyinstaller
-
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ matrix.os }}-${{ github.run_id }}
+          name: ${{ matrix.os }}-build-${{ github.run_id }}
           path: dist_release/*
 
       - name: Upload PyInstaller Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pyinstaller-build-${{ matrix.os }}-${{ github.run_id }}
+          name: pyinstaller-build-${{ github.run_id }}
           path: dist_release_pyinstaller/*
 
   release:
@@ -94,12 +88,6 @@ jobs:
         with:
           path: dist_release_pyinstaller
 
-      - name: Debug: List downloaded dist_release contents
-        run: ls -al dist_release
-
-      - name: Debug: List downloaded dist_release_pyinstaller contents
-        run: ls -al dist_release_pyinstaller
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -113,8 +101,6 @@ jobs:
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist_release/*
-            dist_release_pyinstaller/*
+          files: dist_release/**/*, dist_release_pyinstaller/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
