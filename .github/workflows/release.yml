@@ -45,7 +45,7 @@ jobs:
       - name: Make A Zip File That Covers Executable
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
-            powershell Compress-Archive -Path dist/* -DestinationPath dist/game-${{ runner.os }}.zip
+            powershell -Command "Compress-Archive -Path dist\\* -DestinationPath dist\\game-${{ runner.os }}.zip"
           else
             zip -r dist/game-${{ runner.os }}.zip dist/*
           fi
