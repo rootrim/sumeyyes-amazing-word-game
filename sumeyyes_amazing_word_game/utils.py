@@ -1,13 +1,12 @@
 import csv
 import os
 import sqlite3
-
-# import sys
+import sys
 
 
 def get_base_path():
-    # if hasattr(sys, "_MEIPASS"):
-    #    return sys._MEIPASS
+    if hasattr(sys, "_MEIPASS"):
+        return sys._MEIPASS
     return os.path.abspath("sumeyyes_amazing_word_game")
 
 
