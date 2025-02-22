@@ -33,16 +33,6 @@ jobs:
       - name: Build Project
         run: poetry build
 
-      - name: Package Application
-        run: |
-          mkdir dist_release
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            cp dist/*.whl dist_release/
-          else
-            cp dist/*.tar.gz dist_release/
-          fi
-        shell: bash
-
       - name: Install PyInstaller
         run: |
           pip install pyinstaller
@@ -55,35 +45,17 @@ jobs:
       - name: Make A Zip File That Covers Executable
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
-            powershell Compress-Archive -Path dist/__main__ -DestinationPath dist/game-${{ runner.os }}.zip
+            powershell Compress-Archive -Path dist/* -DestinationPath dist/game-${{ runner.os }}.zip
           else
-            zip -r dist/game-${{ runner.os }}.zip dist/__main__
+            zip -r dist/game-${{ runner.os }}.zip dist/*
           fi
         shell: bash
 
-      - name: Package PyInstaller Build
-        run: |
-          mkdir dist_release_pyinstaller
-          cp -r dist/* dist_release_pyinstaller/
-        shell: bash
-
-      - name: Upload Build Artifact
+      - name: Upload ZIP Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-build-${{ github.run_id }}
-          path: dist_release/*
-
-      - name: Upload PyInstaller Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: pyinstaller-build-${{ matrix.os }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: dist_release_pyinstaller/*
-
-  #   - name: Upload ZIP Artifact
-  #     uses: actions/upload-artifact@v4
-  #     with:
-  #       name: game-zip-${{ matrix.os }}-${{ github.run_id }}
-  #       path: dist/game-${{ runner.os }}.zip
+          name: game-zip-${{ matrix.os }}-${{ github.run_id }}
+          path: dist/game-${{ runner.os }}.zip
 
   release:
     needs: build
@@ -93,15 +65,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download Artifacts
+      - name: Download ZIP Artifacts
         uses: actions/download-artifact@v4
         with:
           path: dist_release
-
-      - name: Download PyInstaller Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: dist_release_pyinstaller
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -113,12 +80,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Release Assets
+      - name: Upload Release ZIPs
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist_release/**/* 
-            dist_release_pyinstaller/**/*
-        #   dist_release/**/game-*.zip
+          files: dist_release/**/game-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
