@@ -59,7 +59,10 @@ class Player:
         conn = sqlite3.connect(player_path)
         c = conn.cursor()
         c.execute(
-            "INSERT INTO players VALUES (?, ?, ?)",
+            """
+            INSERT OR REPLACE INTO players (name, score, knownWordCount)
+            VALUES (?, ?, ?)
+            """,
             (self.name, self.score, self.knownWordCount),
         )
         conn.commit()
