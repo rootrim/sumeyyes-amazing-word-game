@@ -1,8 +1,7 @@
-from sumeyyes_amazing_word_game.tui import main
+from sumeyyes_amazing_word_game.gui import WelcomeScreen
+from sumeyyes_amazing_word_game.utils import fetch_words
+
 
 if __name__ == "__main__":
-    choice = input("Do you wanna play game as a TUI game(y/n)\n-> ")
-    if choice.lower() == "y":
-        main()
-    else:
-        print("Goodbye then!")
+    welcome = WelcomeScreen(fetch_words())
+    welcome.mainloop()

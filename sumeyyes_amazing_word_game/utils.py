@@ -2,9 +2,10 @@ import csv
 import os
 import sqlite3
 import sys
+from typing import List, Tuple
 
 
-def get_base_path():
+def get_base_path() -> str:
     if hasattr(sys, "_MEIPASS"):
         return sys._MEIPASS
     return os.path.abspath("sumeyyes_amazing_word_game")
@@ -15,7 +16,7 @@ player_path = os.path.join(get_base_path(), "data", "players.db")
 csv_path = os.path.join(get_base_path(), "data", "words.csv")
 
 
-def fetch_words():
+def fetch_words() -> List[Tuple[str, str, str]]:
     conn = sqlite3.connect(word_path)
     cursor = conn.cursor()
 
@@ -27,7 +28,7 @@ def fetch_words():
     return words
 
 
-def init_db():
+def init_db() -> None:
     conn = sqlite3.connect(word_path)
     cursor = conn.cursor()
 
@@ -63,7 +64,7 @@ def init_db():
     conn.close()
 
 
-def import_words_from_csv(csv_file=csv_path):
+def import_words_from_csv(csv_file: str = csv_path) -> None:
     conn = sqlite3.connect(word_path)
     cursor = conn.cursor()
 
@@ -92,6 +93,20 @@ def import_words_from_csv(csv_file=csv_path):
     print(
         f"{imported} word imported successfully. {skipped} words skipped (already imported)."
     )
+
+
+def fetch_leaderboard() -> List[Tuple[str, int, int]]:
+    conn = sqlite3.connect(player_path)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT name, score, knownWordCount FROM players ORDER BY score DESC"
+    )
+
+    leaderboard = cursor.fetchall()
+    conn.close()
+
+    return leaderboard
 
 
 if __name__ == "__main__":
