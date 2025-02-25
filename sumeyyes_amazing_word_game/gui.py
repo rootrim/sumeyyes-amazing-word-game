@@ -1,4 +1,6 @@
 import customtkinter as ctk
+import threading
+import time
 from sumeyyes_amazing_word_game.game_logic import Game
 from sumeyyes_amazing_word_game.objects import Player
 from sumeyyes_amazing_word_game.utils import fetch_leaderboard
@@ -55,6 +57,15 @@ class WordGameApp(ctk.CTk):
         # Game object
         self.game = Game(player, words)
 
+        # Timer setup
+        self.timer_label = ctk.CTkLabel(
+            self, text="Time Left: 2:00", font=("Arial", 16)
+        )
+        self.timer_label.pack(pady=5)
+
+        # Start timer thread
+        threading.Thread(target=self.start_timer, daemon=True).start()
+
         # Frame for content
         self.main_frame = ctk.CTkFrame(self)
         self.main_frame.pack(fill="both", expand=True, padx=20, pady=20)
@@ -98,7 +109,7 @@ class WordGameApp(ctk.CTk):
         )
         self.reveal_button.pack(side="left", padx=5)
 
-        # Lower button frame for Skip and Save & Quit
+        # Lower button frame for Skip and Save & Exit
         self.lower_button_frame = ctk.CTkFrame(self.main_frame)
         self.lower_button_frame.pack(pady=10)
 
@@ -109,12 +120,12 @@ class WordGameApp(ctk.CTk):
         )
         self.skip_button.pack(side="left", padx=5)
 
-        self.save_and_quit_button = ctk.CTkButton(
+        self.save_and_exit_button = ctk.CTkButton(
             self.lower_button_frame,
-            text="Save & Quit",
-            command=self.save_and_quit,
+            text="Save & Exit",
+            command=self.save_and_exit,
         )
-        self.save_and_quit_button.pack(side="left", padx=5)
+        self.save_and_exit_button.pack(side="left", padx=5)
 
         # Score and known words
         self.score_label = ctk.CTkLabel(
@@ -132,6 +143,17 @@ class WordGameApp(ctk.CTk):
         # Result message
         self.message_label = ctk.CTkLabel(self.main_frame, text="", font=("Arial", 14))
         self.message_label.pack(pady=5)
+
+    def start_timer(self):
+        while self.game.time_left > 0 and self.game.timer_running:
+            mins, secs = divmod(self.game.time_left, 60)
+            time_format = f"Time Left: {mins:02d}:{secs:02d}"
+            self.timer_label.configure(text=time_format)
+            time.sleep(1)
+            self.game.time_left -= 1
+
+        if self.game.time_left <= 0:
+            self.save_and_exit()
 
     def make_guess(self):
         guess = self.entry.get().strip()
@@ -155,11 +177,12 @@ class WordGameApp(ctk.CTk):
         self.game.next()
         self.update_ui()
 
-    def save_and_quit(self):
+    def save_and_exit(self):
+        self.game.timer_running = False
         self.game.save_score()
-        self.destroy()
-        leaderboard = LeaderboardScreen(self.game.player)
+        leaderboard = LeaderboardScreen()
         leaderboard.mainloop()
+        self.destroy()
 
     def update_ui(self):
         self.word_label.configure(text=self.game.show())
@@ -174,7 +197,7 @@ class WordGameApp(ctk.CTk):
 
 
 class LeaderboardScreen(ctk.CTk):
-    def __init__(self, player):
+    def __init__(self):
         super().__init__()
         self.title("Leaderboard")
         self.geometry("500x500")
@@ -192,12 +215,12 @@ class LeaderboardScreen(ctk.CTk):
 
         self.populate_leaderboard()
 
-        self.destroy_button = ctk.CTkButton(
+        self.exit_button = ctk.CTkButton(
             self,
-            text="Quit",
+            text="Exit",
             command=self.destroy,
         )
-        self.destroy_button.pack(pady=10, side="bottom")
+        self.exit_button.pack(pady=10, side="bottom")
 
     def populate_leaderboard(self):
         leaderboard = fetch_leaderboard()

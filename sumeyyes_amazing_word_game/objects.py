@@ -1,4 +1,3 @@
-import os
 import sqlite3
 from random import choice
 from typing import Tuple

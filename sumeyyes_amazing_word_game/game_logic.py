@@ -15,6 +15,8 @@ class Game:
         self.words = words
         self.used_words = set()
         self.current_word = self.get_random_word()
+        self.time_left = 120  # 2 minutes
+        self.timer_running = True
 
     def get_random_word(self) -> Word | None:
         """
@@ -49,6 +51,8 @@ class Game:
             return True
         elif input_word == "IUSEARCHBTW":
             self.player.add_score(1000000)
+        elif input_word == "DIO":
+            self.time_left = 10
         else:
             print("Incorrect guess. Try again!")
         return False
